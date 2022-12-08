@@ -2,9 +2,11 @@ const db = require('../infra/firebaseConfig')
 
 class Usuario{
 
-   setIdAndPassword(id, email){
+   setIdAndPassword(id, email, perfil, name){
     this.id = id
     this.email = email
+    this.perfil = perfil
+    this.name = name
    }
 
    setPublication(idPublic, linkImg, descricao){
@@ -17,13 +19,19 @@ class Usuario{
     this.like = like
    }
 
-   setMessagePublic(message){
+   setMessagePublic(message, idMessage){
     this.message = message
+    this.idMessage = idMessage
    }
 
   async creatUser(){
     try {
-        const create = await db.collection('usuarios').doc(`${this.id}`).set({email: this.email})
+        const create = await db.collection('usuarios').doc(`${this.id}`).set({
+            email: this.email,
+            perfil: this.perfil, 
+            nome: this.name,
+            message: ''
+        })
         
         return 'Usuario criado'
     } catch (error) {
@@ -37,7 +45,7 @@ class Usuario{
             curtidas: 0,
             descricao: this.descricao,
             data: '',
-            linkImg:''      
+            linkImg: this.linkImg     
         })
     
         return 'Publicação criada'
@@ -48,8 +56,11 @@ class Usuario{
 
    async postLike(){
     try {
-        const setLike = await db.collection('usuarios').doc(`${this.id}`).collection('publicaçoes').doc(`${this.idPublic}`).update({curtidas: this.like})
+        const docPublic = await db.collection('usuarios').doc(`${this.id}`).collection('publicaçoes').doc(`${this.idPublic}`).get()
+        const likeAtual = docPublic.data().curtidas
+        const setLike = await db.collection('usuarios').doc(`${this.id}`).collection('publicaçoes').doc(`${this.idPublic}`).update({curtidas: this.like + likeAtual})
 
+        console.log(likeAtual)
         return 'Curtiu'
     } catch (error) {
         return {error: error}
@@ -58,7 +69,7 @@ class Usuario{
 
    async postMessage(){
     try {
-        const addMessage = await db.collection('usuarios').doc(`${this.id}`).collection('publicaçoes').doc(`${this.idPublic}`).collection('mensagens').add({message: this.message, id: this.id})
+        const addMessage = await db.collection('usuarios').doc(`${this.id}`).collection('publicaçoes').doc(`${this.idPublic}`).collection('mensagens').doc(`${this.idMessage}`).set({message: this.message, idMessage: this.idMessage, id: this.id})
 
         return "Mensagem Enviada!"
     } catch (error) {
@@ -81,8 +92,10 @@ module.exports = usuario
 
 usuario.setIdAndPassword('ola', 'ga@gmail.com')
 usuario.creatUser()
+
 usuario.setPublication('p1', 1, '1 publicação')
 usuario.postPublicacao()
+
 usuario.setMessagePublic('postagem muito ruim')
 usuario.postMessage()
 
