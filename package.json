@@ -1,16 +1,10 @@
 {
-  "scripts": {
-    "start": "node server/app.js"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "firebase-admin": "^11.3.0",
-    "nodemon": "^2.0.20"
-  },
   "name": "back-fest",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "start": "node server/app.js"
+  },
   "devDependencies": {},
   "repository": {
     "type": "git",
@@ -22,5 +16,11 @@
     "url": "https://github.com/Gabrielmarquezin/fest-like.gi/issues"
   },
   "homepage": "https://github.com/Gabrielmarquezin/fest-like.gi#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "firebase-admin": "^11.3.0",
+    "nodemon": "^2.0.20"
+  },
   "description": ""
 }
